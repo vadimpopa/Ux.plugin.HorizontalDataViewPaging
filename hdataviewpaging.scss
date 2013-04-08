@@ -1,0 +1,34 @@
+.ux-dataview-paging .x-innerhtml {
+  display:-webkit-box;
+	-webkit-box-orient:vertical;
+	-webkit-box-pack:center;
+	-webkit-box-align:center;
+	height: 100%;
+}
+
+.ux-dataview-paging {
+  position:absolute;
+  
+  .x-loading-spinner {
+    display: none;
+    margin: auto;
+  }
+
+  .x-list-paging-msg {
+    text-align: center;
+    color: $active-color;
+    clear: both;
+      @if $include-border-radius { @include border-radius(6px); }
+  }
+
+  &.x-loading {
+
+    .x-loading-spinner {
+      display: block;
+    }
+
+    .x-list-paging-msg {
+      display: none;
+    }
+  }
+}
