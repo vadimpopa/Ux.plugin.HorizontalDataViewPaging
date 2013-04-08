@@ -163,7 +163,7 @@ Ext.define('Ux.plugin.HorizontalDataViewPaging', {
         }
     },
     onStoreChanges: function(store,records){
-        this.updateContainerSize();
+        this.updateSizes();
     },
     /**
      * @private
