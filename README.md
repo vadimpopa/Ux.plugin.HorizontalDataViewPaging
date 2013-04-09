@@ -28,3 +28,5 @@ Ext.create('Ext.DataView', {
     itemTpl: '<div>{name} is {age} years old</div>'
 });
 ```
+
+Example on video: https://vimeo.com/63639531
