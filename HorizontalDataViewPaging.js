@@ -272,8 +272,12 @@ Ext.define('Ux.plugin.HorizontalDataViewPaging', {
         var dataview = this.getDataView(),
             left = dataview.getStore().getCount()*this.itemWidth,
             width = left + this.getWidth();
-
-        this.element.setLeft(left)
-        dataview.innerElement.setWidth(width);
+            
+        if(width > dataview.element.getWidth()){
+            this.element.setLeft(left)
+            dataview.innerElement.setWidth(width);
+        }else{
+            this.hide();
+        }
     }
 });
