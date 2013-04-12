@@ -1,7 +1,7 @@
 Ux.plugin.HorizontalDataViewPaging
 ==================================
 
-Sencha Touch 2  plugin that adds a Load More button at the end(right) of a dataview with horizontal scrollable.
+Sencha Touch 2  plugin that adds a Load More button at the end(right) of a DataView with horizontal scrollable and with element.Container use
 Inspired from Ext.plugin.ListPaging.
 
 Usage

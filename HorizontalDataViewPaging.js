@@ -2,13 +2,13 @@
  * @class Ux.plugin.HorizontalDataViewPaging
  * @extend Ext.Component
  *
- * A plugin inspired from Ext.plugin.ListPaging, that adds a Load More button at the end(right) of a dataview with horizontal scrollable
+ * A plugin inspired from Ext.plugin.ListPaging, that adds a Load More button at the end(right) of a DataView with horizontal scrollablea and with element.Container use
  * @author Vadim Popa
  * 
 */
 
 Ext.define('Ux.plugin.HorizontalDataViewPaging', {
-  extend: 'Ext.Component',
+    extend: 'Ext.Component',
     alias: 'plugin.hdataviewpaging',
 
     config: {
@@ -24,11 +24,11 @@ Ext.define('Ux.plugin.HorizontalDataViewPaging', {
         loadMoreText: 'Load More...',
 
         /**
-         * @cfg {String} noMoreRecordsText The text used as the label of the Load More button when the Store's
+         * @cfg {String} noMoreRecordsText The text used as the label of the Load More button when the Store's. If is null or empty then won't be shown
          * {@link Ext.data.Store#totalCount totalCount} indicates that all of the records available on the server are
          * already loaded
          */
-        noMoreRecordsText: 'No More Records',
+        noMoreRecordsText: '',
 
         /**
          * @private
@@ -50,7 +50,7 @@ Ext.define('Ux.plugin.HorizontalDataViewPaging', {
 
         /**
          * @private
-         * @cfg {Boolean} loadMoreCmpAdded Indicates whether or not the load more component has been added to the dataview
+         * @cfg {Boolean} loadMoreCmpAdded Indicates whether or not the load more component has been added to the DataView
          * yet.
          */
         loadMoreCmpAdded: false,
@@ -63,13 +63,13 @@ Ext.define('Ux.plugin.HorizontalDataViewPaging', {
 
         /**
          * @private
-         * @cfg {Ext.dataview.DataView} dataview Local reference to the dataview this plugin is bound to
+         * @cfg {Ext.dataview.DataView} dataView Local reference to the DataView this plugin is bound to
          */
         dataView: null,
 
         /**
          * @private
-         * @cfg {Ext.scroll.Scroller} scroller Local reference to the dataview's Scroller
+         * @cfg {Ext.scroll.Scroller} scroller Local reference to the DataView's Scroller
          */
         scroller: null,
 
@@ -77,7 +77,9 @@ Ext.define('Ux.plugin.HorizontalDataViewPaging', {
          * @private
          * @cfg {Boolean} loading True if the plugin has initiated a Store load that has not yet completed
          */
-        loading: false
+        loading: false,
+
+        hidden: true
     },
 
     /**
@@ -154,7 +156,7 @@ Ext.define('Ux.plugin.HorizontalDataViewPaging', {
     /**
      * @private
      * If the Store is just about to load but it's currently empty, we hide the load more button because this is
-     * usually an outcome of setting a new Store on the dataview so we don't want the load more button to flash while
+     * usually an outcome of setting a new Store on the DataView so we don't want the load more button to flash while
      * the new Store loads
      */
     onStoreBeforeLoad: function(store) {
@@ -162,6 +164,9 @@ Ext.define('Ux.plugin.HorizontalDataViewPaging', {
             this.hide();
         }
     },
+    /**
+     * @private
+     */
     onStoreChanges: function(store,records){
         this.updateSizes();
     },
@@ -169,35 +174,51 @@ Ext.define('Ux.plugin.HorizontalDataViewPaging', {
      * @private
      */
     onStoreRefresh: function(store) {
-        var me = this,
-            message  = me.storeFullyLoaded() ? me.getNoMoreRecordsText() : me.getLoadMoreText(),
-            dataview = me.getDataView(),
-            count = store.getCount();
+        var me = this;
         
         if(me.isHidden())
             me.show();
 
-        
         if(store.currentPage==1){
-            dataview.setLoadingText(null);
-            if(me.itemWidth)
-                me.getScroller().scrollToTop();
-
-            if(!count)
-                me.hide(); 
+            me.initPaging(store);
         }
 
-        if (count){
+        if(store.getCount()){
             me.updateSizes();
         }
         
         me.setLoading(false);
 
-        //if we've reached the end of the data set, switch to the noMoreRecordsText
+        if(me.storeFullyLoaded()){
+            if(me.getNoMoreRecordsText()){
+                //if we've reached the end of the data set, switch to the noMoreRecordsText
+                me.setHtml(me.getLoadTpl().apply({
+                    cssPrefix: Ext.baseCSSPrefix,
+                    message: me.getNoMoreRecordsText()
+                }));
+            }else{
+                me.hide();
+            }
+        }
+    },
+    /**
+     * @private
+     */
+    initPaging: function(store) {
+        var me = this;
+
+        me.getDataView().setLoadingText(null);
+
         me.setHtml(me.getLoadTpl().apply({
             cssPrefix: Ext.baseCSSPrefix,
-            message: message
+            message: me.getLoadMoreText()
         }));
+
+        if(me.itemWidth)
+            me.getScroller().scrollToTop();
+
+        if(!store.getCount())
+            me.hide(); 
     },
 
     /**
@@ -216,7 +237,7 @@ Ext.define('Ux.plugin.HorizontalDataViewPaging', {
     },
     /**
      * @private
-     * Because the attached dataview's inner dataview element is rendered after our init function is called,
+     * Because the attached DataView's inner DataView element is rendered after our init function is called,
      * we need to dynamically add the loadMoreCmp later. This does this once and caches the result.
      */
     addLoadMoreCmp: function() {
@@ -226,9 +247,9 @@ Ext.define('Ux.plugin.HorizontalDataViewPaging', {
             dataview.add(this);
 
             /**
-             * @event loadmorecmpadded  Fired when the Load More component is added to the dataview. Fires on the dataview.
-             * @param {Ext.plugin.dataviewPaging} this The dataview paging plugin
-             * @param {Ext.dataview} dataview The dataview
+             * @event loadmorecmpadded  Fired when the Load More component is added to the DataView. Fires on the DataView.
+             * @param {Ext.plugin.HorizontalDataViewPaging} this The DataView paging plugin
+             * @param {Ext.DataView} dataview The DataView
              */
             dataview.fireEvent('loadmorecmpadded', this, dataview);
             this.setLoadMoreCmpAdded(true);
@@ -257,6 +278,9 @@ Ext.define('Ux.plugin.HorizontalDataViewPaging', {
             this.getDataView().getStore().nextPage({ addRecords: true });
         }
     },
+    /**
+     * @private
+     */
     initSizes: function(){
         var el = Ext.get(this.getDataView().getItemAt(0)),
             margin = el.getMargin();
@@ -264,6 +288,9 @@ Ext.define('Ux.plugin.HorizontalDataViewPaging', {
         this.itemWidth = margin.left + margin.right + el.getWidth();
         this.setHeight(el.getHeight());
     },
+    /**
+     * @private
+     */
     updateSizes: function(){
         if(!this.itemWidth){
             this.initSizes();
