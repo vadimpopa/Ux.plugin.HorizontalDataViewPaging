@@ -2,7 +2,7 @@
  * @class Ux.plugin.HorizontalDataViewPaging
  * @extend Ext.Component
  *
- * A plugin inspired from Ext.plugin.ListPaging, that adds a Load More button at the end(right) of a DataView with horizontal scrollablea and with element.Container use
+ * A plugin inspired from Ext.plugin.ListPaging, that adds a Load More button at the end(right) of a DataView with horizontal scrollablea
  * @author Vadim Popa
  * 
 */
@@ -17,7 +17,7 @@ Ext.define('Ux.plugin.HorizontalDataViewPaging', {
          * True to automatically load the next page when you scroll to the bottom of the dataview.
          */
         autoPaging: true,
-
+        
         /**
          * @cfg {String} loadMoreText The text used as the label of the Load More button.
          */
@@ -282,7 +282,8 @@ Ext.define('Ux.plugin.HorizontalDataViewPaging', {
      * @private
      */
     initSizes: function(){
-        var el = Ext.get(this.getDataView().getItemAt(0)),
+        var item = this.getDataView().getItemAt(0),
+            el = Ext.isElement(item) ? Ext.get(item) : item.element,
             margin = el.getMargin();
 
         this.itemWidth = margin.left + margin.right + el.getWidth();
