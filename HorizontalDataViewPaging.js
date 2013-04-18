@@ -2,7 +2,7 @@
  * @class Ux.plugin.HorizontalDataViewPaging
  * @extend Ext.Component
  *
- * A plugin inspired from Ext.plugin.ListPaging, that adds a Load More button at the end(right) of a DataView with horizontal scrollablea
+ * A plugin inspired from Ext.plugin.ListPaging, that adds a Load More button at the end(right) of a DataView with horizontal scrollablea and with element.Container use
  * @author Vadim Popa
  * 
 */
@@ -176,6 +176,11 @@ Ext.define('Ux.plugin.HorizontalDataViewPaging', {
     onStoreRefresh: function(store) {
         var me = this;
         
+
+        if(store.getId() == "aylook-store-events-1"){
+            console.log(store.getId() + ' refresh');    
+        }
+
         if(me.isHidden())
             me.show();
 
@@ -284,9 +289,19 @@ Ext.define('Ux.plugin.HorizontalDataViewPaging', {
     initSizes: function(){
         var item = this.getDataView().getItemAt(0),
             el = Ext.isElement(item) ? Ext.get(item) : item.element,
-            margin = el.getMargin();
+            margin = el.getMargin(),
+            width = el.getWidth();
 
-        this.itemWidth = margin.left + margin.right + el.getWidth();
+        if(width==0){
+            // If store was loaded but the items/elements were only rendered and not painted 
+            // is needed to update sizes when first paint element will happen
+            el.on('painted',function(el){
+                this.itemWidth = null;
+                this.updateSizes();
+            },this,{single:true});
+        }
+
+        this.itemWidth = margin.left + margin.right + width;
         this.setHeight(el.getHeight());
     },
     /**
