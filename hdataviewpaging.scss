@@ -1,13 +1,13 @@
-.ux-dataview-paging .x-innerhtml {
-  display:-webkit-box;
-	-webkit-box-orient:vertical;
-	-webkit-box-pack:center;
-	-webkit-box-align:center;
-	height: 100%;
-}
-
 .ux-dataview-paging {
   position:absolute;
+
+  .x-innerhtml {
+    display:-webkit-box;
+    -webkit-box-orient:vertical;
+    -webkit-box-pack:center;
+    -webkit-box-align:center;
+    height: 100%;
+  }
   
   .x-loading-spinner {
     display: none;
