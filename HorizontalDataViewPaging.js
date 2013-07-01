@@ -159,10 +159,14 @@ Ext.define('Ux.plugin.HorizontalDataViewPaging', {
      * usually an outcome of setting a new Store on the DataView so we don't want the load more button to flash while
      * the new Store loads
      */
-    onStoreBeforeLoad: function(store) {
+    onStoreBeforeLoad: function(store, operations) {
+        var mask = this.getDataView().getMasked();
+
         if (store.getCount() === 0) {
             this.hide();
         }
+        // Show mask if needed only when loading first page
+        operations._page > 1 ? mask.hide() : mask.show();
     },
     /**
      * @private
@@ -211,8 +215,6 @@ Ext.define('Ux.plugin.HorizontalDataViewPaging', {
      */
     initPaging: function(store) {
         var me = this;
-
-        me.getDataView().setLoadingText(null);
 
         me.setHtml(me.getLoadTpl().apply({
             cssPrefix: Ext.baseCSSPrefix,
@@ -292,7 +294,7 @@ Ext.define('Ux.plugin.HorizontalDataViewPaging', {
             margin = el.getMargin(),
             width = el.getWidth();
 
-        if(width==0){
+        if(width===0){
             // If store was loaded but the items/elements were only rendered and not painted 
             // is needed to update sizes when first paint element will happen
             el.on('painted',function(el){
@@ -317,7 +319,7 @@ Ext.define('Ux.plugin.HorizontalDataViewPaging', {
             width = left + this.getWidth();
             
         if(width > dataview.element.getWidth()){
-            this.element.setLeft(left)
+            this.element.setLeft(left);
             dataview.innerElement.setWidth(width);
         }else{
             this.hide();
